@@ -16,3 +16,14 @@ Annual change: The Script determines the earliest date and latest date any tradi
 Percent change: uses the annual change computation and divides it by the opening value. If the opening value is still zero, then the annual change is also zero, so an if, then, else statement is used to set the percent change as O%.
 
 The annual trading volume is simply added as each row is interogated.
+
+Next the program creates a new formated area and looks through the newly created array of annual data to find the best and worst performing stocks by percent change simply by running a set of commands to return the max and min values from the percent change column. And doing the same to the trading volume column to find the stock with the highest trade volume. The commands also return the row information for each value, which is used to obtain the associated ticker symbol information.
+
+
+Conditional Formatting: 
+
+I used the 'record macro' function to manually set up the conditional foratting for the data columns, then edited the code to make it run in the final Macro.
+
+Entire Workbook functionality:
+
+I used a 'For Each' Loop at the beginning of the code to iterate the code through all of the worksheets in the workbook. I used the variable page assigned as a worksheet. This also required editing the entire code to add the 'page.' modifier to the begging of every cell, range, and column refernce in the code, without that, all updates are only made to the first worksheet.

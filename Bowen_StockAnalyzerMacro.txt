@@ -1,0 +1,120 @@
+Public Sub StockAnalyzer()
+
+    Dim Page As Worksheet
+    
+        
+    For Each Page In Worksheets
+    
+        Dim TickerSymbol, Check As String
+        Dim ListCounter As Integer
+        Dim StartDate, EndDate, LastRow As Long
+        Dim OpenValue, CloseValue As Single
+        
+        Check = ""                                                              'Initializes check as a null string
+        ListCounter = 2                                                         'Creates a starting cell for the Ticker Symbols list in column I since it starts as an empty list
+        StartDate = Page.Cells(2, 2).Value
+        EndDate = Page.Cells(2, 2).Value
+        LastRow = ActiveSheet.UsedRange.Rows.Count
+    
+
+    
+        Page.Columns("k:k").Style = "Percent"
+        Page.Columns("k:k").NumberFormat = "0.00%"
+        
+        Page.Columns("j:j").Select
+        Selection.NumberFormat = "0.00"
+        Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
+            Formula1:="=0"
+        Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+        
+        With Selection.FormatConditions(1).Interior
+            .PatternColorIndex = xlAutomatic
+            .ThemeColor = xlThemeColorAccent6
+            .TintAndShade = -0.249946592608417
+        End With
+        
+        Selection.FormatConditions(1).StopIfTrue = False
+        Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, _
+            Formula1:="=0"
+        Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+        
+        With Selection.FormatConditions(1).Interior
+            .PatternColorIndex = xlAutomatic
+            .Color = 192
+            .TintAndShade = 0
+        End With
+        
+        Selection.FormatConditions(1).StopIfTrue = False
+        Page.Range("J1").FormatConditions.Delete
+        
+        Page.Cells(1, 9) = "Ticker Symbol"
+        Page.Cells(1, 10) = "Yearly Change"
+        Page.Cells(1, 11) = "Percent Change"
+        Page.Cells(1, 12) = "Total Stock Volume"
+        Page.Columns("I:L").EntireColumn.AutoFit
+        
+        For i = 3 To Page.Cells(Rows.Count, 2).End(xlUp).Row
+            If Page.Cells(i, 2).Value <= StartDate Then
+                StartDate = Page.Cells(i, 2).Value
+            End If
+            If Page.Cells(i, 2).Value >= EndDate Then
+                EndDate = Page.Cells(i, 2).Value
+            End If
+        Next i
+        'Cells(2, 14).Value = StartDate
+        'Cells(2, 15).Value = EndDate
+        
+        For i = 2 To Page.Cells(Rows.Count, 1).End(xlUp).Row                         'indexes rows from 2 until the last row with a value in it in column A
+         
+            TickerSymbol = Page.Cells(i, 1).Value                                    'Takes the value from the cell in column A to be evaluated
+          
+            For J = 2 To ListCounter                                            'checks ticker symbol list in column I to see if the symbol is already in the list
+                If Page.Cells(J, 9).Value = TickerSymbol Then                        'If present in list...
+                    Page.Cells(J, 12).Value = Page.Cells(J, 12).Value + Page.Cells(i, 7).Value 'adds Stock volume from column G to the Total for that ticker symbol in column L
+                    Check = TickerSymbol                                        'updates a check variable to show that the ticker symbol was found in the list
+                    If Page.Cells(i, 2).Value = EndDate Then
+                        CloseValue = Page.Cells(i, 6).Value
+                        Page.Cells(J, 10).Value = CloseValue - OpenValue
+                        Page.Cells(J, 11).Value = Page.Cells(J, 10).Value / OpenValue
+                    End If
+                    Exit For                                                    ' ends for loop when condition looked for is met to speed program
+                End If
+            Next J
+            
+            If Check <> TickerSymbol Then                                       'compares check variable to determine if CC Type not in list
+                Page.Cells(ListCounter, 9).Value = TickerSymbol                      'if not present adds the CC Type to end of list
+                Page.Cells(i, 7).Value = Page.Cells(ListCounter, 12).Value                'adds the Stock Volume from column G to Total in column L
+                If Page.Cells(i, 2).Value = StartDate Then
+                    OpenValue = Page.Cells(i, 3).Value
+                End If
+                ListCounter = ListCounter + 1                                   'increments the credit card list counter so the next new card type will be added to the end of the list
+            End If
+        Next i
+        
+        Page.Range("Q2:Q3").Style = "Percent"
+        Page.Range("Q2:Q3").NumberFormat = "0.00%"
+        Page.Cells(1, 16) = "Ticker"
+        Page.Cells(1, 17) = "Value"
+        Page.Cells(2, 15) = "Greatest % Increase"
+        Page.Cells(3, 15) = "Greatest % Decrease"
+        Page.Cells(4, 15) = "Greatest Total Volume"
+        
+        Page.Cells(2, 17).Value = Application.WorksheetFunction.Max(Range(Cells(2, 11), Cells(LastRow, 11)))
+        Page.Cells(3, 17).Value = Application.WorksheetFunction.Min(Range(Cells(2, 11), Cells(LastRow, 11)))
+        Page.Cells(4, 17).Value = Application.WorksheetFunction.Max(Range(Cells(2, 12), Cells(LastRow, 12)))
+        Columns("O:Q").EntireColumn.AutoFit
+        
+        For i = 2 To Page.Cells(Rows.Count, 12).End(xlUp).Row
+            If Page.Cells(i, 11).Value = Page.Cells(2, 17).Value Then
+                Page.Cells(2, 16).Value = Page.Cells(i, 9).Value
+            End If
+            If Page.Cells(i, 11).Value = Page.Cells(3, 17).Value Then
+                Page.Cells(3, 16).Value = Page.Cells(i, 9).Value
+            End If
+            If Page.Cells(i, 12).Value = Page.Cells(4, 17).Value Then
+                Page.Cells(4, 16).Value = Page.Cells(i, 9).Value
+            End If
+        Next i
+   Next
+End Sub
+
