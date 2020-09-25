@@ -16,35 +16,34 @@ Public Sub StockAnalyzer()
         EndDate = Page.Cells(2, 2).Value
         LastRow = ActiveSheet.UsedRange.Rows.Count
     
-
+        'MsgBox Page.Name
     
         Page.Columns("k:k").Style = "Percent"
         Page.Columns("k:k").NumberFormat = "0.00%"
         
-        Page.Columns("j:j").Select
-        Selection.NumberFormat = "0.00"
-        Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
+        Page.Columns("j:j").NumberFormat = "0.00"
+        Page.Columns("j:j").FormatConditions.Add Type:=xlCellValue, Operator:=xlGreater, _
             Formula1:="=0"
-        Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+        Page.Columns("j:j").FormatConditions(Page.Columns("j:j").FormatConditions.Count).SetFirstPriority
         
-        With Selection.FormatConditions(1).Interior
+        With Page.Columns("j:j").FormatConditions(1).Interior
             .PatternColorIndex = xlAutomatic
             .ThemeColor = xlThemeColorAccent6
             .TintAndShade = -0.249946592608417
         End With
         
-        Selection.FormatConditions(1).StopIfTrue = False
-        Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, _
+        Page.Columns("j:j").FormatConditions(1).StopIfTrue = False
+        Page.Columns("j:j").FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, _
             Formula1:="=0"
-        Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+        Page.Columns("j:j").FormatConditions(Page.Columns("j:j").FormatConditions.Count).SetFirstPriority
         
-        With Selection.FormatConditions(1).Interior
+        With Page.Columns("j:j").FormatConditions(1).Interior
             .PatternColorIndex = xlAutomatic
             .Color = 192
             .TintAndShade = 0
         End With
         
-        Selection.FormatConditions(1).StopIfTrue = False
+        Page.Columns("j:j").FormatConditions(1).StopIfTrue = False
         Page.Range("J1").FormatConditions.Delete
         
         Page.Cells(1, 9) = "Ticker Symbol"
@@ -52,7 +51,7 @@ Public Sub StockAnalyzer()
         Page.Cells(1, 11) = "Percent Change"
         Page.Cells(1, 12) = "Total Stock Volume"
         Page.Columns("I:L").EntireColumn.AutoFit
-        
+   
         For i = 3 To Page.Cells(Rows.Count, 2).End(xlUp).Row
             If Page.Cells(i, 2).Value <= StartDate Then
                 StartDate = Page.Cells(i, 2).Value
@@ -99,10 +98,10 @@ Public Sub StockAnalyzer()
         Page.Cells(3, 15) = "Greatest % Decrease"
         Page.Cells(4, 15) = "Greatest Total Volume"
         
-        Page.Cells(2, 17).Value = Application.WorksheetFunction.Max(Range(Cells(2, 11), Cells(LastRow, 11)))
-        Page.Cells(3, 17).Value = Application.WorksheetFunction.Min(Range(Cells(2, 11), Cells(LastRow, 11)))
-        Page.Cells(4, 17).Value = Application.WorksheetFunction.Max(Range(Cells(2, 12), Cells(LastRow, 12)))
-        Columns("O:Q").EntireColumn.AutoFit
+        Page.Cells(2, 17).Value = Application.WorksheetFunction.Max(Page.Range(Page.Cells(2, 11), Page.Cells(LastRow, 11)))
+        Page.Cells(3, 17).Value = Application.WorksheetFunction.Min(Page.Range(Page.Cells(2, 11), Page.Cells(LastRow, 11)))
+        Page.Cells(4, 17).Value = Application.WorksheetFunction.Max(Page.Range(Page.Cells(2, 12), Page.Cells(LastRow, 12)))
+        Page.Columns("O:Q").EntireColumn.AutoFit
         
         For i = 2 To Page.Cells(Rows.Count, 12).End(xlUp).Row
             If Page.Cells(i, 11).Value = Page.Cells(2, 17).Value Then
@@ -115,6 +114,19 @@ Public Sub StockAnalyzer()
                 Page.Cells(4, 16).Value = Page.Cells(i, 9).Value
             End If
         Next i
-   Next
+   Next Page
 End Sub
 
+Sub Reset()
+
+    Dim Page As Worksheet
+    
+    For Each Page In Worksheets
+
+        Page.Columns("I:Q").ClearContents
+        Page.Columns("I:Q").ColumnWidth = 10.53
+        Page.Cells.FormatConditions.Delete
+        Page.Columns("I:Q").NumberFormat = "General"
+    
+    Next
+End Sub

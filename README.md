@@ -1,11 +1,13 @@
 # VBA-challenge
 
 This project was to develop a macro to analyze an array of daily stock trading information and compute annual trading results for multiple years of data.
-
+In all there were over 2000 different ticker symbols with over 800,000 daily records in the multiyear data set.
 
 Design concept:
 
-My design is to treat the data as an unsorted array and use nested for loops to scan the entire array for all instances of each individual value. The script will pull the trading volumes and add them to the annual total during this loop. Since the daily records in the array do not all start and end on the first and last of the year, there will be a second for loop to walk through all of the value to determine their first and last dates. 
+My design is to treat the data as an unsorted array and use nested for loops to scan the entire array for all instances of each individual value. The script will pull the trading volumes and add them to the annual total during this loop. Since the daily records in the array do not all start and end on the first and last of the year, there will be a second for loop to walk through all of the value to determine their first and last dates.
+
+Having problems getting program to run completely with multi-year data set. Takes too long to run. 
 
 
 
@@ -27,3 +29,8 @@ I used the 'record macro' function to manually set up the conditional foratting 
 Entire Workbook functionality:
 
 I used a 'For Each' Loop at the beginning of the code to iterate the code through all of the worksheets in the workbook. I used the variable page assigned as a worksheet. This also required editing the entire code to add the 'page.' modifier to the begging of every cell, range, and column refernce in the code, without that, all updates are only made to the first worksheet.
+
+
+Reset Macro: 
+
+There is also a macro that can be run to erase all of the data and conditional formatting in order to quickly reset the page to its original state in order to observe follow on test runs
