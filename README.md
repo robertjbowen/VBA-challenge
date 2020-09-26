@@ -3,6 +3,14 @@
 This project was to develop a macro to analyze an array of daily stock trading information and compute annual trading results for multiple years of data.
 In all there were over 2000 different ticker symbols with over 800,000 daily records in the multiyear data set.
 
+
+Documents in this repository are:
+
+Bowen_StockAnalyzerMacro.txt - VBA Macro stored as a text file which contains 2 Macros, StockAnalyzer (Primary Code), and Reset (clears the page to speed test runs)
+
+Output Results Screen Shots for 2014, 2015, and 2016
+
+
 Design concept:
 
 My original Macro design treated the data as an unsorted array and used nested for loops to scan the entire array for all instances of each individual value. This code worked worked on the reduced test data set, but proved to be very long running and could not handle the extremely large data set of the multi-year stock data.
@@ -22,6 +30,8 @@ The annual trading volume is simply added as each row is interogated.
 After completing the calculations all of the variables are reset to their original values. A row counter is indexed to step to the next row in the ticker symbol column and the new ticker symbol its initial dates, opening and closing values, and first day trading total are added to the list.
 
 The loop then indexes to the next row in the column and the process starts over for the new ticker symbol.
+
+Once the for loop completes, one last set of calculations is required to fill in the final row of data.
 
 Next the program creates a new formated area and looks through the newly created array of annual data to find the best and worst performing stocks by percent change simply by running a set of commands to return the max and min values from the percent change column. And doing the same to the trading volume column to find the stock with the highest trade volume. The commands also return the row information for each value, which is used to obtain the associated ticker symbol information.
 

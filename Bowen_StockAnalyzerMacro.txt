@@ -1,6 +1,6 @@
 Sub StockAnalyzer()
 
-' Assign Valiables and types
+' Assign variables and types
 
     Dim Page As Worksheet
     Dim TickerSymbol As String
@@ -12,24 +12,22 @@ Sub StockAnalyzer()
         
     For Each Page In Worksheets
         
- ' Initialize Variables for each worksheet
+' Initialize Variables for each worksheet
  
-        ListCounter = 2                                                         'Creates a starting cell for the Ticker Symbols list in column I since it starts as an empty list
- '       LastRow = ActiveSheet.UsedRange.Rows.Count
+        ListCounter = 2
         TickerSymbol = Page.Cells(2, 1).Value
         LowestDate = 99999999
         HighestDate = 0
         OpenValue = 0
         CloseValue = 0
         
- ' Formats Columns K to display the data as a percentage with two decimal places
+' Formats Columns K to display the data as a percentage with two decimal places
  
         Page.Columns("k:k").Style = "Percent"
         Page.Columns("k:k").NumberFormat = "0.00%"
         
-' Formats Columns J to display the data with two decimal places and
+' Formats Column J to display the data with two decimal places
 ' applies conditional formtting to color cells green for positive values and red for negative values - REQUIREMENT #5
-' used "Record Macro" to capture the steps in this process
 
         Page.Columns("j:j").NumberFormat = "0.00"
         
@@ -41,7 +39,6 @@ Sub StockAnalyzer()
         End With
         
         Page.Columns("j:j").FormatConditions(1).StopIfTrue = False
-        
         Page.Columns("j:j").FormatConditions.Add Type:=xlCellValue, Operator:=xlLess, Formula1:="=0"
         Page.Columns("j:j").FormatConditions(Page.Columns("j:j").FormatConditions.Count).SetFirstPriority
         
@@ -50,10 +47,9 @@ Sub StockAnalyzer()
         End With
         
         Page.Columns("j:j").FormatConditions(1).StopIfTrue = False
+        Page.Range("J1").FormatConditions.Delete                                ' Removes the conditional formatting from the column J header cell
         
-        Page.Range("J1").FormatConditions.Delete                    ' Removes the conditional formatting from the column J header cell
-        
-' Labels Columns I through L and auto fits the width so data doesn't overlap
+' Labels Columns I through L and auto fits the column widths so data doesn't overlap
 
         Page.Cells(1, 9) = "Ticker Symbol"
         Page.Cells(1, 10) = "Yearly Change"
@@ -64,16 +60,16 @@ Sub StockAnalyzer()
 
 ' Loop to step through a sorted list in column A and create a new list of all of the unique ticker symbols in column I - REQUIREMENT #1
 ' determines the annual opening and closing values for each symbol then calculates and displays the annual change in column J - REQUIREMENT #2
-' determines the annual % change for each symbol, placing the results in K - REQUIREMENT #3
+' determines the annual % change for each symbol, placing the results in column K - REQUIREMENT #3
 ' sums up the trading volume totals for each ticker symbol and displays total in Column L - REQUIREMENT #4
        
-        Page.Cells(ListCounter, 9).Value = TickerSymbol                             ' places first ticker symbol in new list in Column I
+        Page.Cells(ListCounter, 9).Value = TickerSymbol                                 ' places first ticker symbol in new list in Column I
         
-        For i = 2 To Page.Cells(Rows.Count, 1).End(xlUp).Row                         'indexes rows from 2 until the last row with a value in it in column A
+        For i = 2 To Page.Cells(Rows.Count, 1).End(xlUp).Row                            'indexes rows from 2 until the last row with a value in it in column A
     
-            TickerSymbol = Page.Cells(i, 1).Value                                    'Takes the value from the cell in column A to be evaluated
+            TickerSymbol = Page.Cells(i, 1).Value                                       'Takes the value from the cell in column A to be evaluated
             
-            If TickerSymbol = Page.Cells(ListCounter, 9).Value Then
+            If TickerSymbol = Page.Cells(ListCounter, 9).Value Then                     'checks if ticker symbol is same as previous value if
             
                 If Page.Cells(i, 2).Value <= LowestDate And Page.Cells(i, 3).Value <> 0 Then 'checks if date is earlier than current lowest date and opening value is not zero
                     LowestDate = Page.Cells(i, 2).Value                                 'updates the earliest date
@@ -94,7 +90,7 @@ Sub StockAnalyzer()
                 If OpenValue <> 0 Then                                                  'checks for divide by zero error
                     Page.Cells(ListCounter, 11).Value = Page.Cells(ListCounter, 10).Value / OpenValue  'calulates annual percent of change and displays in column K
                 Else
-                    Page.Cells(ListCounter, 11).Value = 0                                'sets percent change to zero if no trading occurred during the year
+                    Page.Cells(ListCounter, 11).Value = 0                               'sets percent change to zero if no trading occurred during the year
                 End If
                 
                 LowestDate = 99999999                                                   'resets the variables used to calculate annual change and % change
@@ -115,7 +111,7 @@ Sub StockAnalyzer()
                     CloseValue = Page.Cells(i, 6).Value                                 'updates to the closing value from the new highest date
                 End If
 
-                Page.Cells(ListCounter, 12).Value = Page.Cells(i, 7).Value  ' adds the daily volume amount to the total ammount in column L
+                Page.Cells(ListCounter, 12).Value = Page.Cells(i, 7).Value              ' adds the daily volume amount to the total ammount in column L
             
             End If
 
@@ -125,10 +121,10 @@ Sub StockAnalyzer()
 
 'calulates annual percent of change and displays in column K for the last ticker symbol
 
-            If OpenValue <> 0 Then  'checks for divide by zero error
+            If OpenValue <> 0 Then                                                      'checks for divide by zero error
                 Page.Cells(ListCounter, 11).Value = Page.Cells(ListCounter, 10).Value / OpenValue
             Else
-                Page.Cells(ListCounter, 11).Value = 0   'sets percent change to zero if no trading occurred
+                Page.Cells(ListCounter, 11).Value = 0                                   'sets percent change to zero if no trading occurred
             End If
  
          Next i
@@ -149,7 +145,9 @@ Sub StockAnalyzer()
         Page.Cells(2, 17).Value = Application.WorksheetFunction.Max(Page.Range(Page.Cells(2, 11), Page.Cells(Page.Columns("K:K").Rows.Count, 11)))
         Page.Cells(3, 17).Value = Application.WorksheetFunction.Min(Page.Range(Page.Cells(2, 11), Page.Cells(Page.Columns("K:K").Rows.Count, 11)))
         Page.Cells(4, 17).Value = Application.WorksheetFunction.Max(Page.Range(Page.Cells(2, 12), Page.Cells(Page.Columns("L:L").Rows.Count, 12)))
-        Page.Columns("O:Q").EntireColumn.AutoFit
+        Page.Columns("O").EntireColumn.AutoFit
+        Page.Columns("P").ColumnWidth = 6
+        Page.Columns("Q").ColumnWidth = 12
         
 ' determines ticker symbol for each max or min value and displays it in column P
 
